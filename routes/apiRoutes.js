@@ -7,34 +7,33 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/api/notes", function (req, res) {
-  res.json(db);
+ res.json(db);
 });
 
 router.post("/api/notes", function (req, res) {
   var newNote = req.body;
   db.push(newNote);
+  db.map((element) => {
+    element.id = db.indexOf(element);
+  });
+  console.log(db)
   fs.writeFile("./db/db.json", JSON.stringify(db), (err) => {
     if (err) throw err;
-    res.json(newNote);
+    res.json(true);
   });
 });
 
-router.delete("api/notes/:tile", (req, res) => {
-  var noteTitle = req.params.title;
-    console.log();
-//   fs.readFile("../db/db.json", "utf8", (err, data) => {
-//     if (err) throw err;
-//     const allNotes = JSON.parse(data);
-//     const newAllNotes = allNotes.filter((note) => note.id != noteId);
-//     fs.writeFile(
-//       "../db/db.json",
-//       JSON.stringify(newAllNotes, null, 2),
-//       (err) => {
-//         if (err) throw err;
-//         res.send(db);
-//       }
-//     );
-//   });
+router.delete("/api/notes/:id", (req, res) => {
+  var noteTitle = req.params.id;
+  console.log(db[noteTitle])
+  console.log(db[0])
+  var allNoteID = db.filter((note) => note.id != noteTitle );
+  fs.writeFile("./db/db.json", JSON.stringify(allNoteID), (err) =>{
+    if (err) throw err;
+    res.send();
+  })
+  
+  
 });
 
 module.exports = router;
