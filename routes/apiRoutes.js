@@ -11,28 +11,34 @@ router.get("/api/notes", function (req, res) {
 });
 
 router.post("/api/notes", function (req, res) {
-  var newNote = req.body;
+   var newNote = req.body;
   db.push(newNote);
   db.map((element) => {
     element.id = db.indexOf(element);
   });
-  console.log(db)
+
   fs.writeFile("./db/db.json", JSON.stringify(db), (err) => {
     if (err) throw err;
     res.json(true);
   });
 });
 
-router.delete("/api/notes/:id", (req, res) => {
+ router.delete("/api/notes/:id",(req, res) => {
   var noteTitle = req.params.id;
-  console.log(db[noteTitle])
-  console.log(db[0])
-  var allNoteID = db.filter((note) => note.id != noteTitle );
-  fs.writeFile("./db/db.json", JSON.stringify(allNoteID), (err) =>{
-    if (err) throw err;
-    res.send();
-  })
-  
+  let delNoteFound = false;
+  for (j=0; j < db.length; j++) {
+    if (db[j].id == noteTitle) {
+        db.splice(j, 1);
+        console.log("Note with id= ", noteTitle, " is deleted");
+        delNoteFound = true;
+    }
+  }
+  if(delNoteFound){
+    fs.writeFile("./db/db.json", JSON.stringify(db), (err) =>{
+      if (err) throw err;
+      res.send();
+    })
+  }
   
 });
 
